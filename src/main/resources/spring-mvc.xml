@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- mvc注解驱动 -->
+    <mvc:annotation-driven/>
+    <!-- Controller的组件扫描 -->
+    <context:component-scan base-package="com.crm"/>
+    <!-- Spring MVC不处理静态资源 -->
+    <mvc:default-servlet-handler/>
+
+    <!-- 配置内部资源视图解析器 -->
+    <bean id="vieResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 前缀 -->
+        <property name="prefix" value="/" />
+        <!-- 后缀 -->
+        <property name="suffix" value=".jsp" />
+    </bean>
+    <!-- 配置拦截器 -->
+<!--    <mvc:interceptors>-->
+<!--        <mvc:interceptor>-->
+<!--            &lt;!&ndash; 对哪些资源进行拦截操作 &ndash;&gt;-->
+<!--            <mvc:mapping path="*"/>-->
+<!--            &lt;!&ndash; 对哪些资源放行 &ndash;&gt;-->
+<!--            <mvc:exclude-mapping path="/image/**"/>-->
+<!--            <mvc:exclude-mapping path="/jquery/**"/>-->
+<!--            <bean class="com.crm.interceptor.LoginInterceptor"/>-->
+<!--        </mvc:interceptor>-->
+<!--    </mvc:interceptors>-->
+    <!-- 配置文件上传解析器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--上传文件编码类型-->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!--上传文件总大小-->
+        <property name="maxUploadSize" value="5242800"/>
+        <!--上传单个文件大小-->
+        <property name="maxUploadSizePerFile" value="5242800"/>
+    </bean>
+</beans>

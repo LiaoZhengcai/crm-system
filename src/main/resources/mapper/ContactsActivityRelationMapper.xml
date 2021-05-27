@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.ContactsActivityRelationMapper">
+    <insert id="doSave">
+        insert into tbl_contacts_activity_relation(id,contactsId,activityId) values(#{id},#{contactsId},#{activityId})
+    </insert>
+
+    <select id="getActivityByContactsId" resultType="activity">
+        select
+            car.id as id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        join tbl_contacts_activity_relation car
+        on a.id=car.activityId
+        where car.contactsId=#{id}
+    </select>
+
+    <delete id="unbundActivity">
+        delete from tbl_contacts_activity_relation where id=#{id}
+    </delete>
+
+    <select id="findAllActivity" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.id not in(
+            select activityId from tbl_contacts_activity_relation where contactsId=#{contactsId}
+        )
+    </select>
+
+    <select id="getActivityByName" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.name like concat('%',#{aname},'%')
+        and a.id not in(
+            select activityId from tbl_contacts_activity_relation where contactsId=#{contactsId}
+        )
+    </select>
+
+    <insert id="relaActivity" parameterType="contactsActivityRelation">
+        insert into tbl_contacts_activity_relation(id,contactsId,activityId) values(#{id},#{contactsId},#{activityId})
+    </insert>
+
+    <select id="selectCarByActivityId" resultType="int">
+        select count(*) from tbl_contacts_activity_relation
+        <where>
+            <foreach collection="array" open="activityId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="deleteCarByActivity">
+        delete from tbl_contacts_activity_relation
+        <where>
+            <foreach collection="array" open="activityId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectCarByContactsIds" resultType="int">
+        select count(*) from tbl_contacts_activity_relation
+        <where>
+            <foreach collection="array" open="contactsId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="doDeleteByContactsIds">
+        delete from tbl_contacts_activity_relation
+        <where>
+            <foreach collection="array" open="contactsId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>

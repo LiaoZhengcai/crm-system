@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.ContactsMapper">
+
+    <select id="pageList" resultType="contacts" parameterType="contacts">
+        select
+        c.id,
+        c.fullname,
+        sc.name as customerId,
+        c.source,
+        u.name as owner,
+        c.birth
+        from tbl_contacts c
+        join tbl_user u
+        on c.owner = u.id
+        join tbl_customer sc
+        on c.customerId = sc.id
+        <where>
+            <if test="fullname!=null and fullname!=''">
+                and c.fullname like concat('%',#{fullname},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like concat('%',#{owner},'%')
+            </if>
+
+            <if test="customerId!=null and customerId!=''">
+                and sc.name like concat('%',#{customerId},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source like concat('%',#{source},'%')
+            </if>
+            <if test="birth!=null and birth!=''">
+                and c.birth like concat('%',#{birth},'%')
+            </if>
+        </where>
+        order by c.createTime desc
+    </select>
+
+    <insert id="saveContacts" parameterType="contacts">
+        insert into tbl_contacts(
+            id,
+            owner,
+            source,
+            customerId,
+            fullname,
+            appellation,
+            email,
+            mphone,
+            job,
+            birth,
+            createBy,
+            createTime,
+            description,
+            contactSummary,
+            nextContactTime,
+            address
+        )
+        values(
+             #{id},
+             #{owner},
+             #{source},
+             #{customerId},
+             #{fullname},
+             #{appellation},
+             #{email},
+             #{mphone},
+             #{job},
+             #{birth},
+             #{createBy},
+             #{createTime},
+             #{description},
+             #{contactSummary},
+             #{nextContactTime},
+             #{address}
+        )
+    </insert>
+
+    <select id="toDetail" resultType="contacts">
+       select
+           c.id,
+           u.name as owner,
+           c.source,
+           cu.name as customerId,
+           c.fullname,
+           c.appellation,
+           c.email,
+           c.mphone,
+           c.job,
+           c.birth,
+           c.createBy,
+           c.createTime,
+           c.editBy,
+           c.editTime,
+           c.description,
+           c.contactSummary,
+           c.nextContactTime,
+           c.address
+       from tbl_contacts c
+       join tbl_user u
+       on c.owner=u.id
+       join tbl_customer cu
+       on c.customerId=cu.id
+       where c.id=#{id}
+    </select>
+
+    <delete id="doDeleteByIds">
+        delete from tbl_contacts
+        <where>
+            <foreach collection="array" open="id in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+    <delete id="doDeleteById">
+        delete from tbl_contacts where id=#{id}
+    </delete>
+
+    <select id="getContactsById" resultType="contacts">
+        select * from tbl_contacts where id=#{id}
+    </select>
+
+    <update id="doUpdate" parameterType="contacts">
+        update tbl_contacts set
+            owner=#{owner},
+            source=#{source},
+            customerId=#{customerId},
+            fullname=#{fullname},
+            appellation=#{appellation},
+            email=#{email},
+            mphone=#{mphone},
+            job=#{job},
+            birth=#{birth},
+            editBy=#{editBy},
+            editTime=#{editTime},
+            description=#{description},
+            contactSummary=#{contactSummary},
+            nextContactTime=#{nextContactTime},
+            address=#{address}
+        where id=#{id}
+    </update>
+
+    <select id="showContactsByName" resultType="contacts">
+        select id,fullname,email,mphone from tbl_contacts where fullname like concat('%',#{cname},'%')
+    </select>
+
+    <select id="getContactsList" resultType="contacts">
+        select * from tbl_contacts
+    </select>
+
+    <select id="getContactsByCustomerId" resultType="contacts">
+        select * from tbl_contacts where customerId = #{id}
+    </select>
+
+    <select id="selectContactsByCustomerIds" resultType="int">
+        select count(*) from tbl_contacts
+        <where>
+            <foreach collection="array" open="customerId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="doDeleteByCustomerIds">
+        delete from tbl_contacts
+        <where>
+            <foreach collection="array" open="customerId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+</mapper>

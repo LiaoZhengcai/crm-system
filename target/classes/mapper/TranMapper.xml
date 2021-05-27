@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.TranMapper">
+    <select id="pageList" resultType="tran" parameterType="tran">
+        select
+        t.id,
+        u.name as owner,
+        t.name,
+        cs.name as customerId,
+        t.stage,
+        t.type,
+        t.source,
+        cn.fullname as contactsId
+        from tbl_tran t
+        join tbl_user u
+        on t.owner = u.id
+        join tbl_customer cs
+        on t.customerId = cs.id
+        join tbl_contacts cn
+        on t.contactsId = cn.id
+        <where>
+            <if test="owner!=null and owner!=''">
+                 u.name like concat('%',#{owner},'%')
+            </if>
+            <if test="name!=null and name!=''">
+                and t.name like concat('%',#{name},'%')
+            </if>
+            <if test="customerId!=null and customerId!=''">
+                and cs.name like concat('%',#{customerId},'%')
+            </if>
+            <if test="stage!=null and stage!=''">
+                and t.stage like concat('%',#{stage},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type like concat('%',#{type},'%')
+            </if>
+            <if test="source!=null and source!=''">
+                and t.source like concat('%',#{source},'%')
+            </if>
+            <if test="contactsId!=null and contactsId!=''">
+                and cn.fullname like concat('%',#{contactsId},'%')
+            </if>
+        </where>
+        order by t.createTime desc
+    </select>
+
+    <insert id="doSave" parameterType="tran">
+        insert into tbl_tran(
+            id,
+            owner,
+            money,
+            name,
+            expectedDate,
+            customerId,
+            stage,
+            type,
+            source,
+            activityId,
+            contactsId,
+            createBy,
+            createTime,
+            description,
+            contactSummary,
+            nextContactTime
+        )
+        values(
+            #{id},
+            #{owner},
+            #{money},
+            #{name},
+            #{expectedDate},
+            #{customerId},
+            #{stage},
+            #{type},
+            #{source},
+            #{activityId},
+            #{contactsId},
+            #{createBy},
+            #{createTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime}
+        )
+    </insert>
+
+    <select id="toDetail" resultType="tran">
+        select
+            t.id,
+            u.name as owner,
+            t.money,
+            t.name,
+            t.expectedDate,
+            cu.name as customerId,
+            t.stage,
+            t.type,
+            t.source,
+            ac.name as activityId,
+            co.fullname as contactsId,
+            t.createBy,
+            t.createTime,
+            t.editBy,
+            t.editTime,
+            t.description,
+            t.contactSummary,
+            t.nextContactTime
+        from tbl_tran t
+        join tbl_user u
+        on t.owner=u.id
+        join tbl_customer cu
+        on t.customerId=cu.id
+        join tbl_activity ac
+        on t.activityId=ac.id
+        join tbl_contacts co
+        on t.contactsId=co.id
+        where t.id=#{id}
+    </select>
+
+    <select id="getTranById" resultType="tran">
+        select * from tbl_tran where id=#{id}
+    </select>
+
+    <update id="updateTran" parameterType="tran">
+        update tbl_tran set
+            owner=#{owner},
+            money=#{money},
+            name=#{name},
+            expectedDate=#{expectedDate},
+            customerId=#{customerId},
+            stage=#{stage},
+            type=#{type},
+            source=#{source},
+            activityId=#{activityId},
+            contactsId=#{contactsId},
+            editBy=#{editBy},
+            editTime=#{editTime},
+            description=#{description},
+            contactSummary=#{contactSummary},
+            nextContactTime=#{nextContactTime}
+        where id=#{id}
+    </update>
+
+    <delete id="doDelete">
+        delete from tbl_tran
+        <where>
+            <foreach collection="array" open="id in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="getTranByCustomerId" resultType="tran">
+        select * from tbl_tran where customerId = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from tbl_tran where id=#{id}
+    </delete>
+
+    <select id="getTranByContactsId" resultType="tran">
+        select * from tbl_tran where contactsId = #{id}
+    </select>
+
+    <select id="selectTranByCustomerIds" resultType="int">
+        select count(*) from tbl_tran
+        <where>
+            <foreach collection="array" open="customerId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="doDeleteByCustomerIds">
+        delete from tbl_tran
+        <where>
+            <foreach collection="array" open="customerId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+</mapper>

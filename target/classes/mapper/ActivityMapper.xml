@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.ActivityMapper">
+    <insert id="addActivity" parameterType="activity">
+        insert into tbl_activity(id,owner,name,startDate,endDate,cost,description,createTime,createBy)
+        values (#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy})
+    </insert>
+
+    <select id="pageList" resultType="activity" parameterType="activity">
+        select
+        a.id,
+        a.name,
+        u.name as owner,
+        a.startDate,
+        a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner = u.id
+        <where>
+            <if test="name!=null and name!=''">
+                a.name like concat('%',#{name},'%')
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like concat('%',#{owner},'%')
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt;= #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt;= #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc
+    </select>
+
+    <delete id="doDelete">
+        delete from tbl_activity
+        <where>
+            <foreach collection="array" open="id in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="getActivityById" resultType="activity">
+        select * from tbl_activity where id = #{id}
+    </select>
+
+    <update id="doUpdate" parameterType="activity">
+        update tbl_activity
+        set owner=#{owner},name=#{name},startDate=#{startDate},endDate=#{endDate},cost=#{cost},description=#{description},editTime=#{editTime},editBy=#{editBy}
+        where id=#{id}
+    </update>
+
+    <select id="toDetail" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate,
+            a.cost,
+            a.description,
+            a.createTime,
+            a.createBy,
+            a.editTime,
+            a.editBy
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.id=#{id}
+    </select>
+
+    <select id="findAllActivity" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.id not in(
+            select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+        )
+    </select>
+
+    <select id="getActivityByName" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.name like concat('%',#{aname},'%')
+        and a.id not in(
+            select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+        )
+    </select>
+
+    <select id="showActivityByName" resultType="activity">
+        select
+            a.id,
+            u.name as owner,
+            a.name,
+            a.startDate,
+            a.endDate
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        where a.name like concat('%',#{aname},'%')
+    </select>
+
+    <select id="getActivityList" resultType="activity">
+        select * from tbl_activity
+    </select>
+</mapper>

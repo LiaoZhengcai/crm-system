@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.crm.dao.ClueActivityRelationMapper">
+  	<select id="getActivityByClueId" resultType="activity">
+        select
+        car.id as id,
+        a.name,
+        a.startDate,
+        a.endDate,
+        u.name as owner
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        join tbl_clue_activity_relation car
+        on a.id=car.activityId
+        where car.clueId=#{id}
+    </select>
+
+    <select id="getAllActivityByClueId" resultType="activity">
+        select
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name as owner
+        from tbl_activity a
+        join tbl_user u
+        on a.owner=u.id
+        join tbl_clue_activity_relation car
+        on a.id=car.activityId
+        where car.clueId=#{id}
+    </select>
+
+    <delete id="unbundActivity">
+        delete from tbl_clue_activity_relation where id = #{id}
+    </delete>
+
+    <insert id="relaActivity" parameterType="clueActivityRelation">
+        insert into tbl_clue_activity_relation(id,clueId,activityId) values(#{id},#{clueId},#{activityId})
+    </insert>
+
+    <delete id="deleteCarByActivity">
+        delete from tbl_clue_activity_relation
+        <where>
+            <foreach collection="array" open="activityId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectCarByActivityId" resultType="int">
+        select count(*) from tbl_clue_activity_relation
+        <where>
+            <foreach collection="array" open="activityId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getListByClueId" resultType="ClueActivityRelation">
+        select * from tbl_clue_activity_relation where clueId=#{clueId}
+    </select>
+
+    <delete id="doDelete" parameterType="clueActivityRelation">
+        delete from tbl_clue_activity_relation where id=#{id}
+    </delete>
+
+    <select id="selectCarByClueIds" resultType="int">
+        select count(*) from tbl_clue_activity_relation
+        <where>
+            <foreach collection="array" open="clueId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </select>
+
+    <delete id="doDeleteByClueIds">
+        delete from tbl_clue_activity_relation
+        <where>
+            <foreach collection="array" open="clueId in(" close=")" item="ids" separator=",">
+                #{ids}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
