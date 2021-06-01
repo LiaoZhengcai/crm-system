@@ -3,6 +3,7 @@ package com.crm.dao;
 import com.crm.domain.TranHistory;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TranHistoryMapper {
 
@@ -13,4 +14,6 @@ public interface TranHistoryMapper {
     int doDelete(String[] ids);
 
     int getHistoryListByids(String[] ids);
+
+    List<Map<String,Object>> getTranHistory();
 }

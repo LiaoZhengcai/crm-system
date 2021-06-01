@@ -44,6 +44,10 @@
             </foreach>
         </where>
     </select>
+
+    <select id="getTranHistory" resultType="map">
+        select count(*) as value,stage as name from tbl_tran_history group by stage
+    </select>
 </mapper>
 
 

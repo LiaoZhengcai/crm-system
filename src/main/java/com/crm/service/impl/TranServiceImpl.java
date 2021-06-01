@@ -137,4 +137,18 @@ public class TranServiceImpl implements TranService {
         }
         return false;
     }
+
+    public Map<String, Object> getChars() {
+        int total = tranMapper.getTotal();
+        List<Map<String,Object>> dataList = tranMapper.getChars();
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("total",total);
+        map.put("dataList",dataList);
+        return map;
+    }
+
+    public List<Map<String,Object>> getTranHistory() {
+        List<Map<String,Object>> dataList = tranHistoryMapper.getTranHistory();
+        return dataList;
+    }
 }

@@ -3,6 +3,7 @@ package com.crm.dao;
 import com.crm.domain.Tran;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TranMapper {
 
@@ -27,4 +28,8 @@ public interface TranMapper {
     int selectTranByCustomerIds(String[] ids);
 
     int doDeleteByCustomerIds(String[] ids);
+
+    int getTotal();
+
+    List<Map<String, Object>> getChars();
 }

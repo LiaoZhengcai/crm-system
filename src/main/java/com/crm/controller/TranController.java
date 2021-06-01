@@ -111,4 +111,19 @@ public class TranController {
         return false;
     }
 
+    @RequestMapping(value = "/getChars")
+    @ResponseBody
+    public Map<String,Object> getChars(){
+        Map<String,Object> map = tranService.getChars();
+        return map;
+    }
+
+    @RequestMapping(value = "/getTranHistory")
+    @ResponseBody
+    public List<Map<String,Object>> getTranHistory(){
+        List<Map<String,Object>> dataList = tranService.getTranHistory();
+        return dataList;
+    }
+
+
 }

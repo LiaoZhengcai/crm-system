@@ -177,4 +177,12 @@
             </foreach>
         </where>
     </delete>
+
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_tran;
+    </select>
+
+    <select id="getChars" resultType="map">
+        select count(*) as value,stage as name from tbl_tran group by stage;
+    </select>
 </mapper>

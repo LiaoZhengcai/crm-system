@@ -23,4 +23,8 @@ public interface TranService {
     List<TranHistory> getHistoryByTranId(String id);
 
     boolean doDelete(String[] ids);
+
+    Map<String, Object> getChars();
+
+    List<Map<String,Object>> getTranHistory();
 }

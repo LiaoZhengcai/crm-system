@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         //判断IP地址是否有效
         String allowIps = user.getAllowIps();
         if(!allowIps.contains(ip)){
-            throw new LoginException("此IP:"+allowIps+"为无效IP，请联系管理员");
+            throw new LoginException("此IP:"+ip+"为无效IP，请联系管理员");
         }
         return  user;
     }
